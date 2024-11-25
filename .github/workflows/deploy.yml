@@ -35,7 +35,7 @@ jobs:
       # Paso 5: Construir la imagen Docker
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/my-repo-name:latest .
+          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/861342632354.dkr.ecr.us-east-1.amazonaws.com/obligatorio/devops2024 .
 
       # Paso 6: Subir la imagen a ECR
       - name: Push Docker image to ECR
