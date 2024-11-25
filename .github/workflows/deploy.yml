@@ -1,4 +1,4 @@
-name: Build and Deploy Docker Image to ECR ObligatorioDevOps
+name: Build and Deploy Docker Image to ECR
 
 on:
   push:
@@ -18,9 +18,9 @@ jobs:
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.ASIA4RDAFRGRIK46CWM4 }}
-          aws-secret-access-key: ${{ secrets.DDdbJ1+4FsQRzIbKYzGHDrNKAqDP3p5H5NO4JlOo }}
-          aws-region: ${{ secrets.us-east-1 }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       # Paso 3: Configurar Docker Buildx
       - name: Set up Docker Buildx
@@ -29,15 +29,14 @@ jobs:
       # Paso 4: Iniciar sesión en Amazon ECR
       - name: Log in to Amazon ECR
         run: |
-          aws ecr get-login-password --region ${{ secrets.us-east-1 }} | docker login --username matiaswsr@gmail.com --password-stdin ${{ secrets.861342632354 }}.dkr.ecr.${{ secrets.us-east-1 }}.amazonaws.com
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
       # Paso 5: Construir la imagen Docker
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.861342632354 }}.dkr.ecr.${{ secrets.us-east-1 }}.amazonaws.com/my-repo-name:latest .
+          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/my-repo-name:latest .
 
       # Paso 6: Subir la imagen a ECR
       - name: Push Docker image to ECR
         run: |
-          docker push ${{ secrets.861342632354 }}.dkr.ecr.${{ secrets.us-east-1 }}.amazonaws.com/my-repo-name:latest
-
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/my-repo-name:latest
