@@ -3,7 +3,7 @@ name: Build and Deploy Docker Image to ECR
 on:
   push:
     branches:
-      - main  # O la rama que elijas
+      - main
 
 jobs:
   build:
@@ -30,15 +30,25 @@ jobs:
       # Paso 4: Iniciar sesión en Amazon ECR
       - name: Log in to Amazon ECR
         run: |
-            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-east-1.amazonaws.com
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
             
       # Paso 5: Construir la imagen Docker
       - name: Build Docker image
         run: |
-          docker build -t 218266829911.dkr.ecr.us-east-1.amazonaws.com/payments:latest .
+          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/payments:latest .
 
       # Paso 6: Subir la imagen a ECR
       - name: Push Docker image to ECR
         run: |
-          docker push 218266829911.dkr.ecr.us-east-1.amazonaws.com/payments:latest
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/payments:latest
+
+      # Paso 7: Configurar kubectl
+      - name: Set up kubectl
+        run: |
+          aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name ${{ secrets.EKS_CLUSTER_NAME }}
+          
+      # Paso 8: Desplegar en EKS
+      - name: Deploy to EKS
+        run: |
+          kubectl apply -f k8s-deployment.yaml
 
