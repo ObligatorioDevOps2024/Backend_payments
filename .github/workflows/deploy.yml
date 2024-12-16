@@ -52,7 +52,7 @@ jobs:
         run: |
           kubectl apply -f k8s-deployment.yaml
 
-      # Paso 9: Aplicar el servicio para exponer la aplicación
+      # Paso 9: Aplicar el servicio para exponer la aplicacion
       - name: Expose service to EKS
         run: |
           kubectl apply -f payments-service.yaml
